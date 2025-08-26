@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Callback Cognito</title>
+  <style>
+    html,body{height:100%;margin:0}
+    body{display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#0b1020;color:#e6e9f0}
+    .card{background:#121a33;padding:32px 28px;border-radius:16px;max-width:600px;width:90%;box-shadow:0 10px 30px rgba(0,0,0,.35);text-align:left}
+    .code-box{background:#1b2345;padding:16px;border-radius:12px;margin-top:12px;font-family:monospace;overflow-wrap:break-word;}
+    .btn{display:inline-block;margin-top:16px;padding:12px 18px;border-radius:12px;border:0;background:#4f8cff;color:#fff;font-weight:600;cursor:pointer}
+    .btn:hover{filter:brightness(1.05)}
+    h1,h2{margin:0 0 12px 0}
+    p{margin:4px 0}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Welcome👋</h1>
+    <p>Here is your Cognito <strong>authorization code</strong>:</p>
+    <div class="code-box" id="auth-code">Carregando...</div>
+
+    <h2>Curl command to exchange the code for a token:</h2>
+    <p>Run the following in your terminal:</p>
+    <div class="code-box" id="curl-example">Carregando...</div>
+
+   <p style="margin-top:20px; font-size:14px; color:#c0c0c0;">
+      For more information, check the 
+      <a href="https://github.com/felippesodre/aws-vpc-api-challenge/blob/main/README.md" target="_blank" style="color:#4f8cff; text-decoration:none;">
+        documentation on GitHub
+      </a>
+    </p>
+  </div>
+
+  <script>
+    // Pega o 'code' da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code") || "The authorization code is missing in the URL";
+
+    document.getElementById("auth-code").textContent = code;
+
+    // Terraform variables
+    const clientId = "${client_id}";
+    const cognitoDomain = "${cognito_domain}";
+    const redirectUri = "${redirect_uri}";
+
+    // Curl command to exchange the code for the token
+    const curlExample = `export COGNITO_TOKEN=$(curl -s -X POST "$${cognitoDomain}/oauth2/token" \n\
+    -H "Content-Type: application/x-www-form-urlencoded" \n\
+    -d "grant_type=authorization_code&client_id=$${clientId}&code=$${code}&redirect_uri=$${encodeURIComponent(redirectUri)}" \n\
+    | jq -r '.id_token')`;
+
+    document.getElementById("curl-example").textContent = curlExample;
+  </script>
+</body>
+</html>
