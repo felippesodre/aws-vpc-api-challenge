@@ -42,7 +42,7 @@ aws configure
 - **Postman** (optional, for API testing)
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 ```text
 aws-vpc-api-challenge
 ├── README.md
